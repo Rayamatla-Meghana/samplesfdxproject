@@ -1,0 +1,161 @@
+name: Salesforce Deployment
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x]
+    
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    
+    - name: Install Dependencies
+      run: |
+        npm ci
+        npm install @salesforce/cli --global
+    
+    - name: Run Linting
+      run: |
+        npm run lint
+    
+    - name: Run Prettier Check
+      run: |
+        npm run prettier:verify
+    
+    - name: Run Unit Tests
+      run: |
+        npm run test:unit
+    
+    - name: Run Apex Tests
+      run: |
+        # Install Salesforce CLI if needed
+        sf org login scratch --set-default --alias testorg --definition-file config/project-scratch-def.json
+        sf project deploy start
+        sf apex run test --class-names AccountCreationHandlerTest --result-format human
+        sf org logout --alias testorg
+    
+  deploy-to-scratch:
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x]
+    
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    
+    - name: Install Dependencies
+      run: |
+        npm ci
+        npm install @salesforce/cli --global
+    
+    - name: Deploy to Scratch Org
+      run: |
+        sf org login scratch --set-default --alias scratchorg --definition-file config/project-scratch-def.json
+        sf project deploy start
+        sf org logout --alias scratchorg
+    
+  deploy-to-dev-hub:
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x]
+    
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    
+    - name: Install Dependencies
+      run: |
+        npm ci
+        npm install @salesforce/cli --global
+    
+    - name: Deploy to Dev Hub
+      env:
+        DEV_HUB_USERNAME: ${{ secrets.DEV_HUB_USERNAME }}
+        SANDBOX_USERNAME: ${{ secrets.SANDBOX_USERNAME }}
+      run: |
+        # Login to Dev Hub
+        echo ${{ secrets.DEV_HUB_USERNAME }} | sf org login sfdx-url --sfdx-url-file -
+        
+        # Deploy to Dev Hub
+        sf project deploy start
+        
+        # Deploy to Sandbox (if credentials provided)
+        if [ -n "$SANDBOX_USERNAME" ]; then
+          echo ${{ secrets.SANDBOX_USERNAME }} | sf org login sfdx-url --sfdx-url-file -
+          sf project deploy start --target-org sandbox
+        fi
+        
+        # Logout
+        sf org logout --all
+
+  deploy-to-production:
+    needs: [test, deploy-to-scratch, deploy-to-dev-hub]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x]
+    
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    
+    - name: Install Dependencies
+      run: |
+        npm ci
+        npm install @salesforce/cli --global
+    
+    - name: Deploy to Production
+      env:
+        PROD_USERNAME: ${{ secrets.PROD_USERNAME }}
+      run: |
+        # Login to Production
+        echo ${{ secrets.PROD_USERNAME }} | sf org login sfdx-url --sfdx-url-file -
+        
+        # Deploy to Production
+        sf project deploy start --target-org production
+        
+        # Logout
+        sf org logout --alias production

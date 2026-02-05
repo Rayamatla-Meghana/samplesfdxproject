@@ -1,0 +1,12 @@
+AccountId,AccountName,Industry,AnnualRevenue,Phone,Website,BillingCity,BillingCountry,Email
+001xx00000A009AA,Tyrell Corporation,Biotech,11000000,012-345-6789,www.tyrell.com,Seattle,USA,hello@gmail.com
+001xx00000A000AA,Manufacturing,5000000,123-456-7890,www.acme.com,New York,USA,hello@gmail.com
+001xx00000A001AA,Globex Inc,Technology,12000000,234-567-8901,www.globex.com,San Francisco,USA
+001xx00000A002AA,Initech,Software,7500000,345-678-9012,www.initech.com,Austin,USA
+001xx00000A003AA,Umbrella Corp,Pharmaceuticals,9800000,456-789-0123,www.umbrella.com,Chicago,USA
+001xx00000A004AA,Hooli,Media,15000000,567-890-1234,www.hooli.com,Los Angeles,USA,hello@gmail.com
+001xx00000A005AA,Stark Industries,Defense,20000000,678-901-2345,www.starkindustries.com,Boston,USA,hello@gmail.com
+001xx00000A006AA,Wayne Enterprises,Finance,13400000,789-012-3456,www.wayneenterprises.com,Gotham,USA
+001xx00000A007AA,Wonka Industries,Food & Beverage,6700000,890-123-4567,www.wonka.com,London,UK
+001xx00000A008AA,Cyberdyne Systems,Robotics,8900000,901-234-5678,www.cyberdyne.com,San Diego,USA,hello@gmail.com
+001xx00000A009AA,Tyrell Corporation,Biotech,11000000,012-345-6789,www.tyrell.com,Seattle,USA,hello@gmail.com

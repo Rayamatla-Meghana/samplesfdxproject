@@ -1,0 +1,55 @@
+DATA QUALITY ANALYSIS REPORT
+============================
+
+CSV FILE: salesforce_accounts_sample.csv
+
+1. MISSING MANDATORY FIELDS ANALYSIS:
+   - AccountName: All records have AccountName (mandatory field)
+   - Industry: Some records missing Industry field
+   - AnnualRevenue: Some records missing AnnualRevenue field
+   - Phone: All records have Phone field
+   - Website: Some records missing Website field
+   - BillingCity: Some records missing BillingCity field
+   - BillingCountry: All records have BillingCountry field
+   - Email: Some records missing Email field
+
+2. INVALID EMAIL FORMATS:
+   - Row 2: "hello@gmail.com" - This is a valid email format
+   - Row 3: No email field present (but this is not an invalid format)
+   - Row 4: No email field present (but this is not an invalid format)
+   - Row 5: No email field present (but this is not an invalid format)
+   - Row 6: "hello@gmail.com" - This is a valid email format
+   - Row 7: "hello@gmail.com" - This is a valid email format
+   - Row 8: No email field present (but this is not an invalid format)
+   - Row 9: "hello@gmail.com" - This is a valid email format
+   - Row 10: "hello@gmail.com" - This is a valid email format
+
+   Note: All email addresses that are present follow valid email format patterns.
+
+3. DUPLICATE RECORDS:
+   - Duplicate AccountId: 001xx00000A009AA appears twice (rows 1 and 10)
+   - Duplicate AccountName: "Tyrell Corporation" appears twice (rows 1 and 10)
+
+4. DATA CONSISTENCY ISSUES:
+   - Inconsistent column order in header row vs data rows
+   - Row 2 has fewer columns than the header (missing Website, BillingCity, BillingCountry, Email)
+   - Row 3 has fewer columns than the header (missing Website, BillingCity, BillingCountry, Email)
+   - Row 4 has fewer columns than the header (missing Website, BillingCity, BillingCountry, Email)
+   - Row 5 has fewer columns than the header (missing Website, BillingCity, BillingCountry, Email)
+   - Row 6 has fewer columns than the header (missing Website, BillingCity, BillingCountry, Email)
+   - Row 7 has fewer columns than the header (missing Website, BillingCity, BillingCountry, Email)
+   - Row 8 has fewer columns than the header (missing Website, BillingCity, BillingCountry, Email)
+   - Row 9 has fewer columns than the header (missing Website, BillingCity, BillingCountry, Email)
+
+5. POTENTIAL DATA QUALITY ISSUES:
+   - Missing data in multiple fields for several records
+   - Inconsistent data formatting (some fields have values, others are blank)
+   - Duplicate entries that could cause data integrity problems
+   - Column misalignment between header and data rows
+
+RECOMMENDATIONS:
+1. Fix column alignment issues in CSV
+2. Add missing mandatory fields (Industry, AnnualRevenue, Website, BillingCity, Email) for all records
+3. Remove duplicate records (Account ID 001xx00000A009AA)
+4. Standardize data formats across all records
+5. Validate email formats for all records that have email addresses
